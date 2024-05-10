@@ -1,6 +1,7 @@
 global using indy_microservice.Models;
 
 using indy_microservice.Data;
+using indy_microservice.RacingService;
 using indy_microservice.Services.BotPilotService;
 using indy_microservice.Services.TireService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,6 +38,7 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly); // ?? add auto-mapper
 builder.Services.AddScoped<IBotPilotService, BotPilotService>(); 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ITireService, TireService>();
+builder.Services.AddScoped<IRacingService, RacingService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
     options => {

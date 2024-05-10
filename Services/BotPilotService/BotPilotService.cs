@@ -6,6 +6,7 @@ using System.Text.Json;
 using AutoMapper;
 using indy_microservice.Data;
 using indy_microservice.DTOs.BotPilot;
+using indy_microservice.DTOs.Characteristic;
 using Microsoft.EntityFrameworkCore;
 
 namespace indy_microservice.Services.BotPilotService
@@ -77,7 +78,11 @@ namespace indy_microservice.Services.BotPilotService
         public async Task<ServiceResponse<List<GetBotPilotDTO>>> GetAllBotPilots()
         {
             var response = new ServiceResponse<List<GetBotPilotDTO>>();
-            List<BotPilot> botPilots = await _context.BotPilots.Where(pilot => pilot.User.Id == GetUserID()).ToListAsync();
+            List<BotPilot> botPilots = await _context.BotPilots.Include(
+                    pilot => pilot.Tire
+                ).Include(
+                    pilot =>  pilot.Characteristics
+                ).Where(pilot => pilot.User.Id == GetUserID()).ToListAsync();
 
             response.Data = botPilots.Select(pilot => _mapper.Map<GetBotPilotDTO>(pilot)).ToList();
 
@@ -87,7 +92,11 @@ namespace indy_microservice.Services.BotPilotService
         public async Task<ServiceResponse<GetBotPilotDTO>> GetBotPilotById(int id)
         {
             var response = new ServiceResponse<GetBotPilotDTO>();
-            var botPilot = await _context.BotPilots.FirstOrDefaultAsync(
+            var botPilot = await _context.BotPilots.Include(
+                    pilot => pilot.Tire
+                ).Include(
+                    pilot =>  pilot.Characteristics
+                ).FirstOrDefaultAsync(
                 pilot => pilot.Id == id && pilot.User.Id == GetUserID()
             );
 
@@ -146,5 +155,48 @@ namespace indy_microservice.Services.BotPilotService
 
             return response;
         }
+
+        public async Task<ServiceResponse<GetBotPilotDTO>> AddCharacteristic(AddBotPilotCharacteristicDTO newCharacteristic)
+        {
+            var response = new ServiceResponse<GetBotPilotDTO>();
+
+            try {
+                var botPilot = await _context.BotPilots.Include(
+                    pilot => pilot.Tire
+                ).Include(
+                    pilot =>  pilot.Characteristics
+                ).FirstOrDefaultAsync(
+                    pilot => pilot.Id == newCharacteristic.BotPilotId && pilot.User.Id == GetUserID()
+                );
+
+                if(botPilot == null) {
+                    response.Success = false;
+                    response.Message = "Pilot not found";
+
+                    return response;
+                }
+
+                var characteristic = await _context.Characteristics.FirstOrDefaultAsync(
+                    c => c.Id == newCharacteristic.CharacteristicId
+                );
+
+                if(characteristic == null) {
+                    response.Success = false;
+                    response.Message = "Characteristic not found";
+
+                    return response;
+                }
+
+                botPilot.Characteristics.Add(characteristic);
+                await _context.SaveChangesAsync();
+                response.Data = _mapper.Map<GetBotPilotDTO>(botPilot);
+            } catch(Exception e) {
+                response.Success = false;
+                response.Message = e.Message;
+            }
+
+            return response;
+        }
+
     }
 }

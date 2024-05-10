@@ -43,6 +43,16 @@ namespace indy_microservice.Services.TireService
                     response.Message = "Pilot not found";
 
                     return response;
+                } 
+
+                var tmpPilotWithTire = await _context.Tires.FirstOrDefaultAsync(
+                    tire => tire.BotPilotId == botPilot.Id
+                );
+                if (tmpPilotWithTire != null) {
+                    response.Success = false;
+                    response.Message = "Pilot already has a tire";
+
+                    return response;
                 }
 
                 Tire tire = new Tire {

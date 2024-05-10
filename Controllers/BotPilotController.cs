@@ -51,5 +51,10 @@ namespace indy_microservice.Controllers
             if(response.Data == null) return NotFound(response);
             return Ok(response);
         }
+
+        [HttpPost("characteristic")]
+        public async Task<ActionResult<ServiceResponse<GetBotPilotDTO>>> AddCharacteristicToPilot(AddBotPilotCharacteristicDTO newCharacteristic) {
+            return Ok(await _botPilotService.AddCharacteristic(newCharacteristic));
+        }
     }
 }

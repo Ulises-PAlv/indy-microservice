@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using indy_microservice.Data;
 
@@ -11,9 +12,10 @@ using indy_microservice.Data;
 namespace indy_microservice.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240510053459_Characteristic")]
+    partial class Characteristic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -58,19 +60,10 @@ namespace indy_microservice.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Podiums")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Racing")
-                        .HasColumnType("int");
-
                     b.Property<int>("Skill")
                         .HasColumnType("int");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Wins")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -98,32 +91,6 @@ namespace indy_microservice.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Characteristics");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Boost = 7,
-                            Name = "DRS"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Boost = 8,
-                            Name = "Wide Spoiler"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Boost = 6,
-                            Name = "IA Suspension"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Boost = 7,
-                            Name = "Carbon Fiber Brakes"
-                        });
                 });
 
             modelBuilder.Entity("indy_microservice.Models.Tire", b =>

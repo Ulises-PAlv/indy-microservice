@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Threading.Tasks;
 using indy_microservice.DTOs.BotPilot;
+using indy_microservice.DTOs.Characteristic;
 
 namespace indy_microservice.Services.BotPilotService
 {
@@ -13,5 +14,6 @@ namespace indy_microservice.Services.BotPilotService
         Task<ServiceResponse<List<GetBotPilotDTO>>> AddBotPilot(AddBotPilotDTO newBot);
         Task<ServiceResponse<GetBotPilotDTO>> UpdateBotPilot(UpdateBotPilotDTO updatedBot, int id);
         Task<ServiceResponse<GetBotPilotDTO>> DeleteBotPilot(int id);
+        Task<ServiceResponse<GetBotPilotDTO>> AddCharacteristic(AddBotPilotCharacteristicDTO newCharacteristic);
     }
 }
